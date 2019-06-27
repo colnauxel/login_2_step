@@ -1,0 +1,14 @@
+{% extends 'index.html' %}
+{% block body %}
+   <h1>Step 2:Check OTP google auth</h1>
+   <hr>
+   <img src="https://chart.googleapis.com/chart?cht=qr&chs=300x300&chl={{totp}}&choe=UTF-8" alt="">
+   <form action="" method="POST">
+      <lable>Check code OTP:</lable>
+
+       <input type="text" class="form-control" name="data_qr">
+       <input type="hidden" value="{{totp}}" name="code_otp">
+      <br>
+      <button type="submit" class="btn btn-primary">Submit</button>
+   </form>
+{% endblock %}
