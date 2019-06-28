@@ -64,8 +64,9 @@ def otp():
             session['verify_otp'] = True
             flash("verify code success", 'success')
             return redirect(url_for('dashboard'))
+        create_qr = request.form['create_qr']
         error = "code OTP incorrect!"
-        return  render_template('otp.html', error = error)
+        return  render_template('otp.html', error = error,create_qr = create_qr,secret_key = code_otp)
     # Create OTP
     secret_key = pyotp.random_base32()
     create_qr=pyotp.totp.TOTP(secret_key).provisioning_uri("xuanloc120297@gmail.com", issuer_name="Secure App")
