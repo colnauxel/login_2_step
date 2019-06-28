@@ -23,13 +23,8 @@ def login():
 
         user = mongo.db.users
         u = user.find({'username': username, 'password': password})
-        # email_user = u['email']
-        # data_user=[]
-        # for d in data_user:
-        #     data_user.append({'username': d['username'],'password': d['password'],'email':d['email']})
         if u.count() > 0:
             session['username'] = username
-            session['email'] = u['email']
             session['logged_in'] = True
             flash('Login user and password success', 'success')
             return redirect(url_for('otp'))
@@ -86,8 +81,3 @@ def dashboard():
 if __name__ == '__main__':
     app.secret_key = 'secret123'
     app.run(debug = True)
-
-
-
-
-
