@@ -3,7 +3,7 @@ from functools import wraps
 from flask_pymongo import PyMongo
 import pyotp
 
-from wtforms import Form,StringField
+from wtforms import Form, StringField
 app = Flask(__name__)
 
 app.config['MONGO_DBNAME'] = 'data_login'
@@ -22,10 +22,14 @@ def login():
         password = request.form['password']
 
         user = mongo.db.users
-        u = user.find({'username': username, 'password': password}).count()
-
-        if u > 0:
+        u = user.find({'username': username, 'password': password})
+        # email_user = u['email']
+        # data_user=[]
+        # for d in data_user:
+        #     data_user.append({'username': d['username'],'password': d['password'],'email':d['email']})
+        if u.count() > 0:
             session['username'] = username
+            session['email'] = u['email']
             session['logged_in'] = True
             flash('Login user and password success', 'success')
             return redirect(url_for('otp'))
@@ -60,7 +64,8 @@ def otp():
     if request.method == 'POST':
         data_qr = request.form['data_qr']
         code_otp = request.form['code_otp']
-        if data_qr == code_otp:
+        otp_totp=pyotp.TOTP(code_otp)
+        if data_qr == otp_totp.now():
             session['verify_otp'] = True
             flash("verify code success", 'success')
             return redirect(url_for('dashboard'))
@@ -68,8 +73,9 @@ def otp():
         return  render_template('otp.html', error = error)
     # Create OTP
     secret_key = pyotp.random_base32()
+    create_qr=pyotp.totp.TOTP(secret_key).provisioning_uri("xuanloc120297@gmail.com", issuer_name="Secure App")
     totp = pyotp.TOTP(secret_key)
-    return render_template('otp.html', totp = totp.now())
+    return render_template('otp.html', secret_key = secret_key,create_qr = create_qr)
 
 @app.route('/dashboard')
 @is_verify_otp
@@ -79,7 +85,7 @@ def dashboard():
 
 if __name__ == '__main__':
     app.secret_key = 'secret123'
-    app.run(debug=True)
+    app.run(debug = True)
 
 
 
