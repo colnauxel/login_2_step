@@ -66,10 +66,10 @@ def otp():
             return redirect(url_for('dashboard'))
         create_qr = request.form['create_qr']
         error = "code OTP incorrect!"
-        return  render_template('otp.html', error = error,create_qr = create_qr,secret_key = code_otp)
+        return  render_template('otp.html', error = error, create_qr = create_qr, secret_key = code_otp)
     # Create OTP
     secret_key = pyotp.random_base32()
-    create_qr=pyotp.totp.TOTP(secret_key).provisioning_uri("xuanloc120297@gmail.com", issuer_name="Secure App")
+    create_qr = pyotp.totp.TOTP(secret_key).provisioning_uri("xuanloc120297@gmail.com", issuer_name = "Secure App")
     totp = pyotp.TOTP(secret_key)
     return render_template('otp.html', secret_key = secret_key,create_qr = create_qr)
 
